@@ -61,12 +61,7 @@
         // console.log(Object.keys(data.statuses));
         // // console.log(data.statuses[5]);
         // console.log(Array.isArray(data.statuses));
-<<<<<<< HEAD
-        var tempArray = [];
-        for (var i=(data.statuses.length-1); i >= 0; i--) {
-            //console.log('***** NEW TWEET * ' + moment(data.statuses[i].created_at).format('MMMM Do YYYY, h:mm a') +  ' * ' + data.statuses[i].user.screen_name +  ' ***** ' + data.statuses[i].text);
-            tempArray.push(data.statuses[i].tex);
-=======
+
         // for (var i=(data.statuses.length-1); i >= 0; i--) {
         //     console.log('***** NEW TWEET * ' + moment(data.statuses[i].created_at).format('MMMM Do YYYY, h:mm a') +  ' * ' + data.statuses[i].retweet_count +  ' ***** ' + data.statuses[i].text);
         // }
@@ -78,7 +73,7 @@
                 mainArr.push(data.statuses[i].text);
                 // console.log(data.statuses[i].text);
             }
->>>>>>> 3eebdd505a896ee9c6ba5008514b7a4c948a0dbe
+
         }
 
         relevantTweets = urlParser(mainArr);
