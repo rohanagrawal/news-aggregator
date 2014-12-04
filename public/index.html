@@ -28,7 +28,7 @@
 
 
         <div class="jumbotron text-center">
-            <h1>Your interests: <span class="label label-info">{{ todos.length }}</span></h1>
+            <h1>Your interests: <span class="label label-info">{{ interests.length }}</span></h1>
             <h3>Current Date:</h3>
             <h3 id='currentDate'></h3>
         </div>
@@ -54,7 +54,7 @@
                     <div class="form-group">
 
 
-                        <input type="text" class="form-control input-lg text-center" placeholder="Set a new goal here" ng-model="formData.text">
+                        <input type="text" class="form-control input-lg text-center" placeholder="What interests you?" ng-model="formData.text">
                         Set priority: <select ng-model="formData.priority">
                             <option value='High'>High</option>
                             <option value='Medium'>Medium</option>
