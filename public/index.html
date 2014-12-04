@@ -34,14 +34,19 @@
         </div>
 
 
-        <div id="goal-list" class="row">
+        <div id="interest-list" class="row">
             <div class="col-sm-4 col-sm-offset-4">
 
 
-                <div class="goal-item" ng-repeat="interest in interests">
+                <div class="interest-item" ng-repeat="interest in interests">
                     <h4>{{ interest.text }}</h4>
                     <h5>{{ "Priority: " + interest.priority }}</h5>
                     <button class="btn btn-primary btn-sm" ng-click='deleteInterest(interest._id)'>Delete</button>
+                </div>
+
+                <div class="tweetlink-item" ng-repeat="tweetlink in tweetlinks">
+                    <h4>{{ tweetlink.text }}</h4>
+                    <!-- <button class="btn btn-primary btn-sm" ng-click='deleteInterest(interest._id)'>Delete</button> -->
                 </div>
 
             </div>
