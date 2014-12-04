@@ -41,12 +41,14 @@
                 <div class="interest-item" ng-repeat="interest in interests">
                     <h4>{{ interest.text }}</h4>
                     <h5>{{ "Priority: " + interest.priority }}</h5>
+                    <h5>{{ interest._id }}</h5>
                     <button class="btn btn-primary btn-sm" ng-click='deleteInterest(interest._id)'>Delete</button>
                 </div>
 
                 <div class="tweetlink-item" ng-repeat="tweetlink in tweetlinks">
                     <h4>{{ tweetlink.text }}</h4>
-                    <!-- <button class="btn btn-primary btn-sm" ng-click='deleteInterest(interest._id)'>Delete</button> -->
+                    <h5>{{ tweetlink._id }}</h5>
+                    <button class="btn btn-primary btn-sm" ng-click='deleteTweetLink(tweetlink._id)'>Delete Link</button>
                 </div>
 
             </div>
@@ -69,6 +71,8 @@
 
 
                     <button type="submit" class="btn btn-primary btn-lg" ng-click="createInterest()">Add an Interest</button>
+
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTweetLink()">Add a Tweet Link</button>
                 </form>
             </div>
         </div>

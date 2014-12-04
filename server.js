@@ -68,14 +68,14 @@
         var mainArr = [];
 
         for (var i=(data.statuses.length-1); i >= 0; i--) {
-            if (data.statuses[i].retweet_count > 100) {
+            if (data.statuses[i].retweet_count > 0) {
                 mainArr.push(data.statuses[i].text);
+                // console.log(data.statuses[i].text);
             }
         }
 
-
-        console.log(urlParser(mainArr));
         relevantTweets = urlParser(mainArr);
+        console.log(relevantTweets);
 
         // console.log(typeof(data.statuses[5].created_at));
         // // var currentDate = Date.parse(data.statuses[5].created_at);
@@ -84,21 +84,50 @@
 
     });
 
+    app.get('/api/tweetlinks', function(req, res) {
 
+        TweetLink.find(function(err, tweetlinks) {
+
+            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+            if (err)
+                res.send(err)
+
+            res.json(tweetlinks);
+        });
+    });
 
     app.post('/api/tweetlinks', function(req, res) {
-        TweetLink.create({
-            text : relevantTweets[0];
+        
+        for (var i=0; i < relevantTweets.length; i++) {
+            TweetLink.create({
+                text : relevantTweets[i]
+            }, function(err, tweetlink) {
+                if (err)
+                    res.send(err);
+
+                TweetLink.find(function(err, tweetlinks) {
+                    if (err)
+                        res.send(err);
+                    res.json(tweetlinks);
+                });
+            })
+        }
+    });
+
+    app.delete('/api/tweetlinks/:tweetlink_id', function(req, res) {
+        TweetLink.remove({
+            _id : req.params.tweetlink_id
         }, function(err, tweetlink) {
             if (err)
                 res.send(err);
 
+            // get and return all the interests after you create another
             TweetLink.find(function(err, tweetlinks) {
                 if (err)
-                    res.send(err);
+                    res.send(err)
                 res.json(tweetlinks);
             });
-        })
+        });
     });
 
 
@@ -125,7 +154,6 @@
         Interest.create({
             text : req.body.text,
             priority: req.body.priority,
-            done : false
         }, function(err, interest) {
             if (err)
                 res.send(err);
@@ -198,9 +226,9 @@
           if(array[j].indexOf(' ') > -1){
             array[j] = array[j].slice(0, array[j].indexOf(' '));
           }
-          if(array[j].indexOf('...') > -1){
-            array.splice(j, 1);
-          }
+          // if(array[j].indexOf('...') > -1){
+          //   array.splice(j, 1);
+          // }
       }
 
       return _.uniq(array);

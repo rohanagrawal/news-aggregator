@@ -49,11 +49,33 @@ function mainController($scope, $http) {
             });
     };
 
+    $scope.createTweetLink = function() {
+        $http.post('/api/tweetlinks')
+            .success(function(data) {
+                $scope.tweetlinks = data;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+    };
+
     // delete an interest after checking it
     $scope.deleteInterest = function(id) {
         $http.delete('/api/interests/' + id)
             .success(function(data) {
                 $scope.interests = data;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+    };
+
+    $scope.deleteTweetLink = function(id) {
+        $http.delete('/api/tweetlink/' + id)
+            .success(function(data) {
+                $scope.tweetlinks = data;
                 console.log(data);
             })
             .error(function(data) {
