@@ -50,6 +50,8 @@
     // create interest and send back all interests after creation
     app.post('/api/interests', function(req, res) {
 
+
+
         // create an interest, information comes from AJAX request from Angular
         Interest.create({
             text : req.body.text,
@@ -94,3 +96,39 @@
     // listen (start app with node server.js) ======================================
     app.listen(8080);
     console.log("App listening on port 8080");
+
+    //====================
+    //function pulls urls from tweet strings
+
+    var arr = [
+        'RT @JustBlogBaby: Scouts Prefer Derek Carr Over Colin Kaepernick http://t.co/ADyDK9n0ey',
+        '@NinersNation: Colin Kaepernick has little to say before 49ers face Raiders. Thoughts on his succinctness? http://t.co/k1CkFqlJxr stuff stuff',
+        'RT Love these ads for @beatsbydre by @RGA. http://t.co/5YnMKvULU9',
+        'RT @957thegame: Which QB would you rather have for the next 5 years?'
+    ];
+
+    function urlParser(arr){
+      var a, array = [];
+
+//loops through arr, which is an array of strings
+//checks for strings that are both retweets AND 
+//possess urls. If so, slices starting at index of 'http'
+//pushes to (variable) array
+      for (var i=0;i<arr.length;i++){
+        if (arr[i].slice(0,3) === 'RT '){
+            if(arr[i].indexOf('http') > -1){
+              a = arr[i].slice(arr[i].indexOf('http'));
+              array.push(a);
+            }
+        }
+      }
+
+//loops through array, checks if there are additional characters after urls in 
+//array. If so, slices off at the first space. 
+      for(var j=0;j<array.length;j++){
+          if(array[j].indexOf(' ') > -1){
+            array[j] = array[j].slice(0, array[j].indexOf(' '));
+          }
+      }
+      console.log(array);
+}
