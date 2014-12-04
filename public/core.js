@@ -47,9 +47,18 @@ function mainController($scope, $http) {
             .error(function(data) {
                 console.log('Error: ' + data);
             });
+
+        $http.get('/api/tweetlinks')
+            .success(function(data) {
+                $scope.tweetlinks = data;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
     };
 
-    $scope.createTweetLink = function() {
+    $scope.createTweetLinks = function() {
         $http.post('/api/tweetlinks')
             .success(function(data) {
                 $scope.tweetlinks = data;
@@ -73,14 +82,21 @@ function mainController($scope, $http) {
     };
 
     $scope.deleteTweetLink = function(id) {
-        $http.delete('/api/tweetlink/' + id)
+        $http.delete('/api/tweetlinks/' + id)
             .success(function(data) {
                 $scope.tweetlinks = data;
                 console.log(data);
+                console.log(Array.isArray($scope.tweetlinks));
             })
             .error(function(data) {
                 console.log('Error: ' + data);
             });
+    };
+
+    $scope.deleteAllTweetLinks = function() {
+        for (var i=0; i < $scope.tweetlinks.length; i++) {
+            $scope.deleteTweetLink($scope.tweetlinks[i]._id);
+        }
     };
 
 }
