@@ -29,9 +29,9 @@
         priority: String,
     });
 
-    // var Tweet = mongoose.model('Tweet', {
-    //     text : String
-    // });
+    var TweetLink = mongoose.model('TweetLink', {
+        text : String
+    });
 
     var currentDate = moment().format('dddd');
 
@@ -49,7 +49,10 @@
     // api ---------------------------------------------------------------------
     // get all interests
 
-    T.get('search/tweets', { q: '49ers since:2014-11-11', count: 100 }, function(err, data, response) {
+    var userInterest = '49ers';
+    var relevantTweets;
+
+    T.get('search/tweets', { q: userInterest + ' since:2014-11-11', count: 100 }, function(err, data, response) {
         // console.log(Object.keys(data));
         // console.log(data.statuses);
         // for (key in data.statuses) {
@@ -58,11 +61,28 @@
         // console.log(Object.keys(data.statuses));
         // // console.log(data.statuses[5]);
         // console.log(Array.isArray(data.statuses));
+<<<<<<< HEAD
         var tempArray = [];
         for (var i=(data.statuses.length-1); i >= 0; i--) {
             //console.log('***** NEW TWEET * ' + moment(data.statuses[i].created_at).format('MMMM Do YYYY, h:mm a') +  ' * ' + data.statuses[i].user.screen_name +  ' ***** ' + data.statuses[i].text);
             tempArray.push(data.statuses[i].tex);
+=======
+        // for (var i=(data.statuses.length-1); i >= 0; i--) {
+        //     console.log('***** NEW TWEET * ' + moment(data.statuses[i].created_at).format('MMMM Do YYYY, h:mm a') +  ' * ' + data.statuses[i].retweet_count +  ' ***** ' + data.statuses[i].text);
+        // }
+
+        var mainArr = [];
+
+        for (var i=(data.statuses.length-1); i >= 0; i--) {
+            if (data.statuses[i].retweet_count > 0) {
+                mainArr.push(data.statuses[i].text);
+                // console.log(data.statuses[i].text);
+            }
+>>>>>>> 3eebdd505a896ee9c6ba5008514b7a4c948a0dbe
         }
+
+        relevantTweets = urlParser(mainArr);
+        console.log(relevantTweets);
 
         // console.log(typeof(data.statuses[5].created_at));
         // // var currentDate = Date.parse(data.statuses[5].created_at);
@@ -71,8 +91,51 @@
 
     });
 
+    app.get('/api/tweetlinks', function(req, res) {
 
+        TweetLink.find(function(err, tweetlinks) {
 
+            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+            if (err)
+                res.send(err)
+
+            res.json(tweetlinks);
+        });
+    });
+
+    app.post('/api/tweetlinks', function(req, res) {
+        
+        for (var i=0; i < relevantTweets.length; i++) {
+            TweetLink.create({
+                text : relevantTweets[i]
+            }, function(err, tweetlink) {
+                if (err)
+                    res.send(err);
+
+                TweetLink.find(function(err, tweetlinks) {
+                    if (err)
+                        res.send(err);
+                    res.json(tweetlinks);
+                });
+            })
+        }
+    });
+
+    app.delete('/api/tweetlinks/:tweetlink_id', function(req, res) {
+        TweetLink.remove({
+            _id : req.params.tweetlink_id
+        }, function(err, tweetlink) {
+            if (err)
+                res.send(err);
+
+            // get and return all the interests after you create another
+            TweetLink.find(function(err, tweetlinks) {
+                if (err)
+                    res.send(err)
+                res.json(tweetlinks);
+            });
+        });
+    });
 
 
     app.get('/api/interests', function(req, res) {
@@ -98,7 +161,6 @@
         Interest.create({
             text : req.body.text,
             priority: req.body.priority,
-            done : false
         }, function(err, interest) {
             if (err)
                 res.send(err);
@@ -142,7 +204,7 @@
     //====================
     //function pulls urls from tweet strings
 
-    var arr = [
+    var sampleArr = [
         'RT @JustBlogBaby: Scouts Prefer Derek Carr Over Colin Kaepernick http://t.co/ADyDK9n0ey',
         '@NinersNation: Colin Kaepernick has little to say before 49ers face Raiders. Thoughts on his succinctness? http://t.co/k1CkFqlJxr stuff stuff',
         'RT Love these ads for @beatsbydre by @RGA. http://t.co/5YnMKvULU9',
@@ -167,6 +229,7 @@ function urlParser(arr){
 
 //loops through array, checks if there are additional characters after urls in 
 //array. If so, slices off at the first space. 
+
   for(var j=0;j<array.length;j++){
     if(array[j].indexOf(' ') > -1){
        array[j] = array[j].slice(0, array[j].indexOf(' '));
@@ -176,5 +239,6 @@ function urlParser(arr){
     }
   }
   return _.uniq(array);
+
 }
 //another commentsssss

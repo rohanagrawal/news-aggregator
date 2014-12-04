@@ -27,14 +27,14 @@ function mainController($scope, $http) {
 
       
     // });
-    // $http.get('/api/interests')
-    //     .success(function(data) {
-    //         $scope.interests = data;
-    //         console.log(data);
-    //     })
-    //     .error(function(data) {
-    //         console.log('Error: ' + data);
-    //     });
+    $http.get('/api/tweetlinks')
+        .success(function(data) {
+            $scope.tweetlinks = data;
+            console.log(data);
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        });
 
     // when submitting the add form, send the text to the node API
     $scope.createInterest = function() {
@@ -49,11 +49,33 @@ function mainController($scope, $http) {
             });
     };
 
+    $scope.createTweetLink = function() {
+        $http.post('/api/tweetlinks')
+            .success(function(data) {
+                $scope.tweetlinks = data;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+    };
+
     // delete an interest after checking it
     $scope.deleteInterest = function(id) {
         $http.delete('/api/interests/' + id)
             .success(function(data) {
                 $scope.interests = data;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+    };
+
+    $scope.deleteTweetLink = function(id) {
+        $http.delete('/api/tweetlink/' + id)
+            .success(function(data) {
+                $scope.tweetlinks = data;
                 console.log(data);
             })
             .error(function(data) {
