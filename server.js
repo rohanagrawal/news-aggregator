@@ -69,15 +69,16 @@
         var mainArr = [];
 
         for (var i=(data.statuses.length-1); i >= 0; i--) {
-            if (data.statuses[i].retweet_count > 0) {
+            if (data.statuses[i].retweet_count >= 0) {
                 mainArr.push(data.statuses[i].text);
                 // console.log(data.statuses[i].text);
             }
-
         }
-
-        relevantTweets = urlParser(mainArr);
-        console.log(relevantTweets);
+        console.log(urlParser(mainArr));
+        //relevantTweets = urlParser(mainArr);
+        // setInterval(function(){
+        //     return console.log(urlParser(mainArr));
+        // }, 5000);
 
         // console.log(typeof(data.statuses[5].created_at));
         // // var currentDate = Date.parse(data.statuses[5].created_at);
@@ -208,7 +209,7 @@
 
 function urlParser(arr){
   var a, array = [];
-  var reject;
+  var x = '…';
 //loops through arr, which is an array of strings
 //checks for strings that are both retweets AND 
 //possess urls. If so, slices starting at index of 'http'
@@ -229,11 +230,27 @@ function urlParser(arr){
     if(array[j].indexOf(' ') > -1){
        array[j] = array[j].slice(0, array[j].indexOf(' '));
     }
-    if(array[j].indexOf('…') > -1){
-      array.splice(j,1);
+  }
+
+  for(var k=0;k<array.length;k++){
+    if(array[k].indexOf(x) > -1) {
+      array.splice(k,1);
     }
   }
-  return _.uniq(array);
 
+
+  for(var l=0;l<array.length;l++){
+    if(array[l].indexOf('Send') === -1) {
+      array.splice(l,1);
+    }
+  }
+
+  for( var m=0;m<array.length;m++){
+    if(array[m][m.length-1] !== /[a-zA-Z]/){
+        array[m] = array[m].slice(0,array[m].length-1);
+    }
+  }
+  
+  return _.uniq(array);
 }
-//another commentsssss
+
