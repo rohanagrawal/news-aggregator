@@ -9,6 +9,7 @@
     var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
     var moment = require('moment');
     var Twit = require('twit');
+    var _ = require('underscore');
 
     // configuration =================
 
@@ -57,8 +58,10 @@
         // console.log(Object.keys(data.statuses));
         // // console.log(data.statuses[5]);
         // console.log(Array.isArray(data.statuses));
+        var tempArray = [];
         for (var i=(data.statuses.length-1); i >= 0; i--) {
-            console.log('***** NEW TWEET * ' + moment(data.statuses[i].created_at).format('MMMM Do YYYY, h:mm a') +  ' * ' + data.statuses[i].user.screen_name +  ' ***** ' + data.statuses[i].text);
+            //console.log('***** NEW TWEET * ' + moment(data.statuses[i].created_at).format('MMMM Do YYYY, h:mm a') +  ' * ' + data.statuses[i].user.screen_name +  ' ***** ' + data.statuses[i].text);
+            tempArray.push(data.statuses[i].tex);
         }
 
         // console.log(typeof(data.statuses[5].created_at));
@@ -146,29 +149,32 @@
         'RT @957thegame: Which QB would you rather have for the next 5 years?'
     ];
 
-    function urlParser(arr){
-      var a, array = [];
-
+function urlParser(arr){
+  var a, array = [];
+  var reject;
 //loops through arr, which is an array of strings
 //checks for strings that are both retweets AND 
 //possess urls. If so, slices starting at index of 'http'
 //pushes to (variable) array
-      for (var i=0;i<arr.length;i++){
-        if (arr[i].slice(0,3) === 'RT '){
-            if(arr[i].indexOf('http') > -1){
-              a = arr[i].slice(arr[i].indexOf('http'));
-              array.push(a);
-            }
+  for (var i=0;i<arr.length;i++){
+    if (arr[i].slice(0,3) === 'RT '){
+        if(arr[i].indexOf('http') > -1){
+          a = arr[i].slice(arr[i].indexOf('http'));
+          array.push(a);
         }
-      }
+    }
+  }
 
 //loops through array, checks if there are additional characters after urls in 
 //array. If so, slices off at the first space. 
-      for(var j=0;j<array.length;j++){
-          if(array[j].indexOf(' ') > -1){
-            array[j] = array[j].slice(0, array[j].indexOf(' '));
-          }
-      }
-      console.log(array);
+  for(var j=0;j<array.length;j++){
+    if(array[j].indexOf(' ') > -1){
+       array[j] = array[j].slice(0, array[j].indexOf(' '));
+    }
+    if(array[j].indexOf('…') > -1){
+      array.splice(j,1);
+    }
+  }
+  return _.uniq(array);
 }
 //another commentsssss
