@@ -8,6 +8,7 @@
     var bodyParser = require('body-parser');    // pull information from HTML POST (express4)
     var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
     var moment = require('moment');
+    var Twit = require('twit');
 
     // configuration =================
 
@@ -27,13 +28,50 @@
         priority: String,
     });
 
+    // var Tweet = mongoose.model('Tweet', {
+    //     text : String
+    // });
+
     var currentDate = moment().format('dddd');
+
+    var T = new Twit({
+        consumer_key:         'nnnMzv63aJKbQgzF77vQLXCm0'
+      , consumer_secret:      'BAG1XL3PHUVw6AsW7K0dRcIv6qkITkWARmZL9Bb8nOKfTkbTpo'
+      , access_token:         '35398491-9KTshSy7QNiKh0Ia71AeZ6D1XMg6teKJWAwp6YNNE'
+      , access_token_secret:  'ivIGOcV4OHxW9lRrW7pevEcxwtk2RDGzVSW6IdOqz9R0D'
+    })
+
 
 
     // routes ======================================================================
 
     // api ---------------------------------------------------------------------
     // get all interests
+
+    T.get('search/tweets', { q: '49ers since:2014-11-11', count: 100 }, function(err, data, response) {
+        // console.log(Object.keys(data));
+        // console.log(data.statuses);
+        // for (key in data.statuses) {
+        //     console.log(key.text);
+        // }
+        // console.log(Object.keys(data.statuses));
+        // // console.log(data.statuses[5]);
+        // console.log(Array.isArray(data.statuses));
+        for (var i=(data.statuses.length-1); i >= 0; i--) {
+            console.log('***** NEW TWEET * ' + moment(data.statuses[i].created_at).format('MMMM Do YYYY, h:mm a') +  ' * ' + data.statuses[i].user.screen_name +  ' ***** ' + data.statuses[i].text);
+        }
+
+        // console.log(typeof(data.statuses[5].created_at));
+        // // var currentDate = Date.parse(data.statuses[5].created_at);
+        // var currentDate = moment(data.statuses[5].created_at).format('MMMM Do YYYY, h:mm a');
+        // console.log(currentDate);
+
+    });
+
+
+
+
+
     app.get('/api/interests', function(req, res) {
 
         // use mongoose to get all interests in the database
@@ -46,6 +84,7 @@
             res.json(interests); // return all interests in JSON format
         });
     });
+
 
     // create interest and send back all interests after creation
     app.post('/api/interests', function(req, res) {
