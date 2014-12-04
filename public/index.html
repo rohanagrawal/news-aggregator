@@ -1,0 +1,78 @@
+<!-- index.html -->
+<!doctype html>
+
+
+<html ng-app="newsAggregator">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+    <title>News Aggregation App</title>
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+    <style>
+        html                    { overflow-y:scroll; }
+        body                    { padding-top:50px; }
+        #interest-list          { margin-bottom:30px; }
+    </style>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <script src="core.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+
+</head>
+
+<body ng-controller="mainController">
+    <div class="container">
+
+
+        <div class="jumbotron text-center">
+            <h1>Your interests: <span class="label label-info">{{ todos.length }}</span></h1>
+            <h3>Current Date:</h3>
+            <h3 id='currentDate'></h3>
+        </div>
+
+
+        <div id="goal-list" class="row">
+            <div class="col-sm-4 col-sm-offset-4">
+
+
+                <div class="goal-item" ng-repeat="interest in interests">
+                    <h4>{{ interest.text }}</h4>
+                    <h5>{{ "Priority: " + interest.priority }}</h5>
+                    <button class="btn btn-primary btn-sm" ng-click='deleteInterest(interest._id)'>Delete</button>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div id="interest-form" class="row">
+            <div class="col-sm-8 col-sm-offset-2 text-center">
+                <form>
+                    <div class="form-group">
+
+
+                        <input type="text" class="form-control input-lg text-center" placeholder="Set a new goal here" ng-model="formData.text">
+                        Set priority: <select ng-model="formData.priority">
+                            <option value='High'>High</option>
+                            <option value='Medium'>Medium</option>
+                            <option value='Low'>Low</option>
+                        </select>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createInterest()">Add an Interest</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById("currentDate").innerHTML = moment().format('MMMM Do YYYY, h:mm a');
+    </script>
+
+</body>
+</html>

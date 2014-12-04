@@ -22,10 +22,9 @@
     app.use(methodOverride());
 
     // define model =================
-    var Todo = mongoose.model('Todo', {
+    var Interest = mongoose.model('Interest', {
         text : String,
         priority: String,
-        date: String
     });
 
     var currentDate = moment().format('dddd');
@@ -34,56 +33,55 @@
     // routes ======================================================================
 
     // api ---------------------------------------------------------------------
-    // get all todos
-    app.get('/api/todos', function(req, res) {
+    // get all interests
+    app.get('/api/interests', function(req, res) {
 
-        // use mongoose to get all todos in the database
-        Todo.find(function(err, todos) {
+        // use mongoose to get all interests in the database
+        Interest.find(function(err, interests) {
 
             // if there is an error retrieving, send the error. nothing after res.send(err) will execute
             if (err)
                 res.send(err)
 
-            res.json(todos); // return all todos in JSON format
+            res.json(interests); // return all interests in JSON format
         });
     });
 
-    // create todo and send back all todos after creation
-    app.post('/api/todos', function(req, res) {
+    // create interest and send back all interests after creation
+    app.post('/api/interests', function(req, res) {
 
-        // create a todo, information comes from AJAX request from Angular
-        Todo.create({
+        // create an interest, information comes from AJAX request from Angular
+        Interest.create({
             text : req.body.text,
             priority: req.body.priority,
-            date: req.body.date,
             done : false
-        }, function(err, todo) {
+        }, function(err, interest) {
             if (err)
                 res.send(err);
 
-            // get and return all the todos after you create another
-            Todo.find(function(err, todos) {
+            // get and return all the interests after you create another
+            Interest.find(function(err, interests) {
                 if (err)
                     res.send(err)
-                res.json(todos);
+                res.json(interests);
             });
         });
 
     });
 
-    // delete a todo
-    app.delete('/api/todos/:todo_id', function(req, res) {
-        Todo.remove({
-            _id : req.params.todo_id
-        }, function(err, todo) {
+    // delete an interest
+    app.delete('/api/interests/:interest_id', function(req, res) {
+        Interest.remove({
+            _id : req.params.interest_id
+        }, function(err, interest) {
             if (err)
                 res.send(err);
 
-            // get and return all the todos after you create another
-            Todo.find(function(err, todos) {
+            // get and return all the interests after you create another
+            Interest.find(function(err, interests) {
                 if (err)
                     res.send(err)
-                res.json(todos);
+                res.json(interests);
             });
         });
     });
