@@ -49,10 +49,10 @@
     // api ---------------------------------------------------------------------
     // get all interests
 
-    var userInterest = '49ers';
-    var relevantTweets;
+    var userInterests;
+    var tweetLinkList;
 
-    T.get('search/tweets', { q: userInterest + ' since:2014-11-11', count: 100 }, function(err, data, response) {
+    T.get('search/tweets', { q: '49ers since:2014-11-11', count: 100 }, function(err, data, response) {
         // console.log(Object.keys(data));
         // console.log(data.statuses);
         // for (key in data.statuses) {
@@ -69,16 +69,17 @@
         var mainArr = [];
 
         for (var i=(data.statuses.length-1); i >= 0; i--) {
-            if (data.statuses[i].retweet_count >= 0) {
+            if (data.statuses[i].retweet_count > 50) {
                 mainArr.push(data.statuses[i].text);
                 // console.log(data.statuses[i].text);
             }
         }
-        console.log(urlParser(mainArr));
-        //relevantTweets = urlParser(mainArr);
-        // setInterval(function(){
-        //     return console.log(urlParser(mainArr));
-        // }, 5000);
+
+        var relevantTweets = urlParser(mainArr);
+        if (relevantTweets.length > 5) {
+            relevantTweets.slice(0, 5);
+        }
+        console.log(relevantTweets);
 
         // console.log(typeof(data.statuses[5].created_at));
         // // var currentDate = Date.parse(data.statuses[5].created_at);
@@ -101,9 +102,9 @@
 
     app.post('/api/tweetlinks', function(req, res) {
         
-        for (var i=0; i < relevantTweets.length; i++) {
+        for (var i=0; i < tweetLinkList.length; i++) {
             TweetLink.create({
-                text : relevantTweets[i]
+                text : tweetLinkList[i]
             }, function(err, tweetlink) {
                 if (err)
                     res.send(err);
@@ -143,6 +144,29 @@
             if (err)
                 res.send(err)
 
+            userInterests = interests;
+            console.log(userInterests[0].text);
+
+            tweetLinkList = [];
+            for (var i=0; i < userInterests.length; i++) {
+                T.get('search/tweets', { q: userInterests[i].text + ' since:2014-11-11', count: 100 }, function(err, data, response) {
+                    var mainArr = [];
+                    for (var i=(data.statuses.length-1); i >= 0; i--) {
+                        if (data.statuses[i].retweet_count > 50) {
+                            mainArr.push(data.statuses[i].text);
+                        }
+                    }
+                    var relevantTweets = urlParser(mainArr);
+                    if (relevantTweets.length > 3) {
+                        relevantTweets = relevantTweets.slice(0, 3);
+                    }
+                    for (var n=0; n < relevantTweets.length; n++) {
+                        tweetLinkList.push(relevantTweets[n]);
+                    }
+                    console.log(tweetLinkList);
+                });
+            };
+
             res.json(interests); // return all interests in JSON format
         });
     });
@@ -165,6 +189,27 @@
             Interest.find(function(err, interests) {
                 if (err)
                     res.send(err)
+
+                tweetLinkList = [];
+                for (var i=0; i < userInterests.length; i++) {
+                    T.get('search/tweets', { q: userInterests[i].text + ' since:2014-11-11', count: 100 }, function(err, data, response) {
+                        var mainArr = [];
+                        for (var i=(data.statuses.length-1); i >= 0; i--) {
+                            if (data.statuses[i].retweet_count > 50) {
+                                mainArr.push(data.statuses[i].text);
+                            }
+                        }
+                        var relevantTweets = urlParser(mainArr);
+                        if (relevantTweets.length > 3) {
+                            relevantTweets = relevantTweets.slice(0, 3);
+                        }
+                        for (var n=0; n < relevantTweets.length; n++) {
+                            tweetLinkList.push(relevantTweets[n]);
+                        }
+                        console.log(tweetLinkList);
+                    });
+                };
+
                 res.json(interests);
             });
         });
@@ -183,6 +228,27 @@
             Interest.find(function(err, interests) {
                 if (err)
                     res.send(err)
+
+                tweetLinkList = [];
+                for (var i=0; i < userInterests.length; i++) {
+                    T.get('search/tweets', { q: userInterests[i].text + ' since:2014-11-11', count: 100 }, function(err, data, response) {
+                        var mainArr = [];
+                        for (var i=(data.statuses.length-1); i >= 0; i--) {
+                            if (data.statuses[i].retweet_count > 50) {
+                                mainArr.push(data.statuses[i].text);
+                            }
+                        }
+                        var relevantTweets = urlParser(mainArr);
+                        if (relevantTweets.length > 3) {
+                            relevantTweets = relevantTweets.slice(0, 3);
+                        }
+                        for (var n=0; n < relevantTweets.length; n++) {
+                            tweetLinkList.push(relevantTweets[n]);
+                        }
+                        console.log(tweetLinkList);
+                    });
+                };
+                
                 res.json(interests);
             });
         });
