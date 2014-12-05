@@ -11,6 +11,6 @@
     "moment": "^2.8.4",
     "mongoose": "~3.6.2",
     "morgan": "~1.2.2",
-    "underscore": "1.7.0"
+    "underscore": "~1.7.0"
   }
 }
