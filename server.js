@@ -26,7 +26,6 @@
     // define model =================
     var Interest = mongoose.model('Interest', {
         text : String,
-        priority: String,
     });
 
     var TweetLink = mongoose.model('TweetLink', {
@@ -52,7 +51,7 @@
     var userInterests;
     var tweetLinkList;
 
-    T.get('search/tweets', { q: '49ers since:2014-11-11', count: 100 }, function(err, data, response) {
+    T.get('search/tweets', { q: 'lakers since:2014-11-11', count: 2000 }, function(err, data, response) {
         // console.log(Object.keys(data));
         // console.log(data.statuses);
         // for (key in data.statuses) {
@@ -69,7 +68,7 @@
         var mainArr = [];
 
         for (var i=(data.statuses.length-1); i >= 0; i--) {
-            if (data.statuses[i].retweet_count > 50) {
+            if (data.statuses[i].retweet_count > 100) {
                 mainArr.push(data.statuses[i].text);
                 // console.log(data.statuses[i].text);
             }
@@ -149,10 +148,10 @@
 
             tweetLinkList = [];
             for (var i=0; i < userInterests.length; i++) {
-                T.get('search/tweets', { q: userInterests[i].text + ' since:2014-11-11', count: 100 }, function(err, data, response) {
+                T.get('search/tweets', { q: userInterests[i].text + ' since:2014-11-11', count: 1000 }, function(err, data, response) {
                     var mainArr = [];
                     for (var i=(data.statuses.length-1); i >= 0; i--) {
-                        if (data.statuses[i].retweet_count > 50) {
+                        if (data.statuses[i].retweet_count > 5) {
                             mainArr.push(data.statuses[i].text);
                         }
                     }
@@ -179,8 +178,7 @@
 
         // create an interest, information comes from AJAX request from Angular
         Interest.create({
-            text : req.body.text,
-            priority: req.body.priority,
+            text : req.body.text
         }, function(err, interest) {
             if (err)
                 res.send(err);
@@ -192,10 +190,10 @@
 
                 tweetLinkList = [];
                 for (var i=0; i < userInterests.length; i++) {
-                    T.get('search/tweets', { q: userInterests[i].text + ' since:2014-11-11', count: 100 }, function(err, data, response) {
+                    T.get('search/tweets', { q: userInterests[i].text + ' since:2014-11-11', count: 1000 }, function(err, data, response) {
                         var mainArr = [];
                         for (var i=(data.statuses.length-1); i >= 0; i--) {
-                            if (data.statuses[i].retweet_count > 50) {
+                            if (data.statuses[i].retweet_count > 5) {
                                 mainArr.push(data.statuses[i].text);
                             }
                         }
@@ -231,10 +229,10 @@
 
                 tweetLinkList = [];
                 for (var i=0; i < userInterests.length; i++) {
-                    T.get('search/tweets', { q: userInterests[i].text + ' since:2014-11-11', count: 100 }, function(err, data, response) {
+                    T.get('search/tweets', { q: userInterests[i].text + ' since:2014-11-11', count: 1000 }, function(err, data, response) {
                         var mainArr = [];
                         for (var i=(data.statuses.length-1); i >= 0; i--) {
-                            if (data.statuses[i].retweet_count > 50) {
+                            if (data.statuses[i].retweet_count > 5) {
                                 mainArr.push(data.statuses[i].text);
                             }
                         }
@@ -273,50 +271,65 @@
         'RT @957thegame: Which QB would you rather have for the next 5 years?'
     ];
 
-function urlParser(arr){
-  var a, array = [];
-  var x = '…';
-//loops through arr, which is an array of strings
-//checks for strings that are both retweets AND 
-//possess urls. If so, slices starting at index of 'http'
-//pushes to (variable) array
-  for (var i=0;i<arr.length;i++){
-    if (arr[i].slice(0,3) === 'RT '){
-        if(arr[i].indexOf('http') > -1){
-          a = arr[i].slice(arr[i].indexOf('http'));
-          array.push(a);
+    function urlParser(arr){
+      var a, array = [];
+      var x = '…';
+    //loops through arr, which is an array of strings
+    //checks for strings that are both retweets AND 
+    //possess urls. If so, slices starting at index of 'http'
+    //pushes to (variable) array
+      for (var i=0;i<arr.length;i++){
+        if (arr[i].slice(0,3) === 'RT '){
+            if(arr[i].indexOf('http') > -1){
+              a = arr[i].slice(arr[i].indexOf('http'));
+              array.push(a);
+            }
         }
+      }
+
+    //loops through array, checks if there are additional characters after urls in 
+    //array. If so, slices off at the first space. 
+
+      for(var j=0;j<array.length;j++){
+        if(array[j].indexOf(' ') > -1){
+          array[j] = array[j].slice(0, array[j].indexOf(' '));
+        }
+      }
+
+      for(var k=0;k<array.length;k++){
+        if(array[k].indexOf(x) > -1) {
+          array.splice(k,1);
+        }
+      }
+
+
+      for(var l=0;l<array.length;l++){
+        if(array[l].indexOf('Send') > -1) {
+          array.splice(l,1);
+        }
+      }
+
+      for( var m=0;m<array.length;m++){
+        var char = array[m].charCodeAt(array[m].length-1)
+        if(!(char > 96 && char < 123) || 
+          !(char > 64 && char < 91) ||
+          !(char > 47 && char < 58)) {
+            array.splice(m,1);
+        }
+      }
+
+      for(var n=0;n<array.length;n++){
+        if(array[n].length < 10) {
+            array.splice(n, 1);
+        }
+      }
+      
+      for( var p=0;p<array.length;p++){
+        if(array[p][array[p].length-1] === ']') {
+            array[p] = array[p].slice(0, array[p].length-1);
+        }
+      }
+
+      return _.uniq(array);
     }
-  }
-
-//loops through array, checks if there are additional characters after urls in 
-//array. If so, slices off at the first space. 
-
-  for(var j=0;j<array.length;j++){
-    if(array[j].indexOf(' ') > -1){
-       array[j] = array[j].slice(0, array[j].indexOf(' '));
-    }
-  }
-
-  for(var k=0;k<array.length;k++){
-    if(array[k].indexOf(x) > -1) {
-      array.splice(k,1);
-    }
-  }
-
-
-  for(var l=0;l<array.length;l++){
-    if(array[l].indexOf('Send') === -1) {
-      array.splice(l,1);
-    }
-  }
-
-  for( var m=0;m<array.length;m++){
-    if(array[m][m.length-1] !== /[a-zA-Z]/){
-        array[m] = array[m].slice(0,array[m].length-1);
-    }
-  }
-  
-  return _.uniq(array);
-}
 

@@ -25,63 +25,68 @@
 
 <body ng-controller="mainController">
     <div class="container">
+        <div class='col-md-6'>
 
 
-        <div class="jumbotron text-center">
-            <h1>Your interests: <span class="label label-info">{{ interests.length }}</span></h1>
-            <h3>Current Date:</h3>
-            <h3 id='currentDate'></h3>
-        </div>
-
-
-        <div id="interest-list" class="row">
-            <div class="col-sm-4 col-sm-offset-4">
-
-
-                <div class="interest-item" ng-repeat="interest in interests">
-                    <h4>{{ interest.text }}</h4>
-                    <h5>{{ "Priority: " + interest.priority }}</h5>
-                    <h5>{{ interest._id }}</h5>
-                    <button class="btn btn-primary btn-sm" ng-click='deleteInterest(interest._id)'>Delete</button>
-                </div>
-
-                <div class="tweetlink-item" ng-repeat="tweetlink in tweetlinks">
-                    <h4>{{ tweetlink.text }}</h4>
-                    <h5>{{ tweetlink._id }}</h5>
-                    <button class="btn btn-primary btn-sm" ng-click='deleteTweetLink(tweetlink._id)'>Delete Link</button>
-                </div>
-
+            <div class="jumbotron text-center">
+                <h1>Your interests: <span class="label label-info">{{ interests.length }}</span></h1>
             </div>
-        </div>
+
+            <div id="interest-form" class="row">
+                <div class="col-sm-8 col-sm-offset-2 text-center">
+                    <form>
+                        <div class="form-group">
 
 
-        <div id="interest-form" class="row">
-            <div class="col-sm-8 col-sm-offset-2 text-center">
-                <form>
-                    <div class="form-group">
+                            <input type="text" class="form-control input-lg text-center" placeholder="What interests you?" ng-model="formData.text">
+                        </div>
 
 
-                        <input type="text" class="form-control input-lg text-center" placeholder="What interests you?" ng-model="formData.text">
-                        Set priority: <select ng-model="formData.priority">
-                            <option value='High'>High</option>
-                            <option value='Medium'>Medium</option>
-                            <option value='Low'>Low</option>
-                        </select>
+                        <button type="submit" class="btn btn-success btn-lg" ng-click="createInterest()">Add an Interest</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div id="interest-list" class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+
+
+                    <div class="interest-item" ng-repeat="interest in interests">
+                        <h4>{{ interest.text }}</h4>
+                        <button class="btn btn-danger btn-sm" ng-click='deleteInterest(interest._id)'>Delete this Interest</button>
                     </div>
 
-
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createInterest()">Add an Interest</button>
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTweetLinks()">Load New Links</button>
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="deleteAllTweetLinks()">Delete All Links</button>
-                </form>
+                </div>
             </div>
         </div>
+
+        <div class='col-md-6'>
+            <div class="jumbotron text-center">
+                <h1>Your latest news updates: <span class="label label-info">{{ tweetlinks.length }}</span></h1>
+            </div>
+
+            <div id="tweetlink-btns" class="row">
+                <div class="col-sm-8 col-sm-offset-2 text-center">
+                    <button type="submit" class="btn btn-success btn-lg" ng-click="createTweetLinks()">Refresh Links</button>
+                </div>
+            </div>
+
+            <div id="tweetlink-list" class="row">
+                <div class="col-sm-8 col-sm-offset-4">
+
+                    <div class="tweetlink-item" ng-repeat="tweetlink in tweetlinks">
+                        <a href="{{ tweetlink.text }}" target="_blank"><h4>{{ tweetlink.text }}</h4></a>
+                        <button class="btn btn-danger btn-sm" ng-click='deleteTweetLink(tweetlink._id)'>Delete this Link</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
 
     </div>
 
-    <script>
-        document.getElementById("currentDate").innerHTML = moment().format('MMMM Do YYYY, h:mm a');
-    </script>
 
 </body>
 </html>
